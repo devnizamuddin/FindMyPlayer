@@ -200,7 +200,9 @@ public class CricketSignUpFragment extends Fragment {
                 if (task.isSuccessful()) {
                     dialog.dismiss();
                     firebaseAuth.signOut();
-                    changeFragment(new LoginFragment());
+                    getActivity().finish();
+                    startActivity(getActivity().getIntent());
+                    //changeFragment(new LoginFragment());
                 } else {
                     dialog.dismiss();
                     Toast.makeText(context, "" + task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();

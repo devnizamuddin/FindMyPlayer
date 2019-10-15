@@ -32,9 +32,7 @@ import java.util.ArrayList;
 
 import dmax.dialog.SpotsDialog;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class AllPlayerFragment extends Fragment implements PlayerAdapter.OnClickPlayerListener {
 
 

@@ -25,7 +25,7 @@
 
         <item>Batsman</item>
         <item>Bowler</item>
-        <item>Wicket Keeper</item>
+        <item>Wicket-Keeper</item>
         <item>Umpire</item>'
 
     </array>
@@ -34,9 +34,9 @@
 
 
         <item>Striker</item>
-        <item>Mid Fielder</item>
+        <item>Mid-Fielder</item>
         <item>Defender</item>
-        <item>Goal Keeper</item>
+        <item>Goal-Keeper</item>
         <item>Referee</item>
 
     </array>

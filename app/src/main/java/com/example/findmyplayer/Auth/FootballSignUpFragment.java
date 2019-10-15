@@ -108,7 +108,7 @@ public class FootballSignUpFragment extends Fragment {
 
         firebaseAuth = FirebaseAuth.getInstance();
         storageReference = FirebaseStorage.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference("UserInfo").child("Football");
+        databaseReference = FirebaseDatabase.getInstance().getReference("PlayerInfo");
 
         upload_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +125,7 @@ public class FootballSignUpFragment extends Fragment {
                 RadioButton player_type_rv = getView().findViewById(radioButtonId);
                 String playerType = player_type_rv.getText().toString();
                 userPoJo.setPlayerType(playerType);
+                userPoJo.setGame_role_address(userPoJo.getSports()+"_"+userPoJo.getPlayerType()+"_"+userPoJo.getAddress());
                 userPoJo.setProfile_img_url(downloadUrl);
                 dialog.show();
                 signUpUser();
@@ -198,7 +199,9 @@ public class FootballSignUpFragment extends Fragment {
                 if (task.isSuccessful()) {
                     dialog.dismiss();
                     firebaseAuth.signOut();
-                    changeFragment(new LoginFragment());
+                    //changeFragment(new LoginFragment());
+                    getActivity().finish();
+                    startActivity(getActivity().getIntent());
                 } else {
                     dialog.dismiss();
                     Toast.makeText(context, "" + task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
