@@ -210,6 +210,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
+        fragmentManager.popBackStack(0,FragmentManager.POP_BACK_STACK_INCLUSIVE);
         switch (menuItem.getItemId()) {
 
             case R.id.nav_profile:

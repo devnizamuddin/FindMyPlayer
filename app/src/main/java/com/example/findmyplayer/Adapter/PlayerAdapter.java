@@ -77,6 +77,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
                         public void onComplete(@NonNull Task<Void> task) {
 
                             if (task.isSuccessful()){
+                                holder.hire_btn.setText("Request send");
                                 Toast.makeText(context, "Request Send", Toast.LENGTH_SHORT).show();
                             }
                             else {
