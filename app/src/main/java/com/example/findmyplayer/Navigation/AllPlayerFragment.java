@@ -73,7 +73,7 @@ public class AllPlayerFragment extends Fragment implements PlayerAdapter.OnClick
                 .setCancelable(false).setTheme(R.style.CustomDialog).build();
 
         userPoJos = new ArrayList<>();
-
+        
         //RecyclerView.............................
         @SuppressLint("WrongConstant") RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false);
         player_rv.setLayoutManager(layoutManager);
@@ -142,6 +142,7 @@ public class AllPlayerFragment extends Fragment implements PlayerAdapter.OnClick
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container_main, fragment);
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
     }

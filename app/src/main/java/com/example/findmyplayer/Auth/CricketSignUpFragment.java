@@ -1,20 +1,25 @@
 package com.example.findmyplayer.Auth;
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -46,6 +51,7 @@ public class CricketSignUpFragment extends Fragment {
     private Button sign_up_btn, upload_btn;
     private ImageView profile_iv;
     private RadioGroup cricket_rg;
+    private EditText history_et;
     private RadioButton wicket_rb, bowler_rb, batsman_rb, umpire_rb;
     private static final int GALLERY_IMAGE_CODE = 1;
     android.app.AlertDialog dialog;
@@ -53,6 +59,7 @@ public class CricketSignUpFragment extends Fragment {
     FirebaseAuth firebaseAuth;
     DatabaseReference databaseReference;
     FirebaseStorage storageReference;
+    private static final int STORAGE_PERMISSION_CODE = 2;
 
     String downloadUrl;
 
@@ -100,6 +107,7 @@ public class CricketSignUpFragment extends Fragment {
         bowler_rb = view.findViewById(R.id.bowler_rb);
         batsman_rb = view.findViewById(R.id.batsman_rb);
         umpire_rb = view.findViewById(R.id.umpire_rb);
+        history_et = view.findViewById(R.id.history_et);
 
         firebaseAuth = FirebaseAuth.getInstance();
         storageReference = FirebaseStorage.getInstance();
@@ -111,13 +119,30 @@ public class CricketSignUpFragment extends Fragment {
         upload_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getImageFromGallery(GALLERY_IMAGE_CODE);
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    getImageFromGallery(GALLERY_IMAGE_CODE);
+                } else {
+
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, GALLERY_IMAGE_CODE);
+                    return;
+                }
             }
         });
         profile_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getImageFromGallery(GALLERY_IMAGE_CODE);
+
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    getImageFromGallery(GALLERY_IMAGE_CODE);
+                } else {
+
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, GALLERY_IMAGE_CODE);
+                    return;
+                }
+
+
             }
         });
         sign_up_btn.setOnClickListener(new View.OnClickListener() {
@@ -127,9 +152,11 @@ public class CricketSignUpFragment extends Fragment {
                 int radioButtonId = cricket_rg.getCheckedRadioButtonId();
                 RadioButton player_type_rv = getView().findViewById(radioButtonId);
                 String playerType = player_type_rv.getText().toString();
+                String history = history_et.getText().toString();
                 userPoJo.setPlayerType(playerType);
                 userPoJo.setProfile_img_url(downloadUrl);
-                userPoJo.setGame_role_address(userPoJo.getSports()+"_"+userPoJo.getPlayerType()+"_"+userPoJo.getAddress());
+                userPoJo.setHistory(history);
+                userPoJo.setGame_role_address(userPoJo.getSports() + "_" + userPoJo.getPlayerType() + "_" + userPoJo.getAddress());
                 dialog.show();
                 signUpUser();
 
@@ -151,9 +178,9 @@ public class CricketSignUpFragment extends Fragment {
                     firebaseUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 Toast.makeText(context, "Registered Successfully"
-                                        +" please verify your email", Toast.LENGTH_SHORT).show();
+                                        + " please verify your email", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -180,12 +207,11 @@ public class CricketSignUpFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
-                if (task.isSuccessful()){
+                if (task.isSuccessful()) {
                     saveUserInfoInDatabase();
-                }
-                else {
+                } else {
                     dialog.dismiss();
-                    Toast.makeText(context, ""+task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "" + task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -282,6 +308,7 @@ public class CricketSignUpFragment extends Fragment {
         fragmentTransaction.commit();
 
     }
+
     public void clearBackstack() {
 
         FragmentManager.BackStackEntry entry = getActivity().getSupportFragmentManager().getBackStackEntryAt(

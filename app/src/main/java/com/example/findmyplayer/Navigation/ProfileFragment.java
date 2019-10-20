@@ -34,8 +34,8 @@ public class ProfileFragment extends Fragment {
 
     private Context context;
     private ImageView profile_iv;
-    private TextView name_tv,email_tv,
-            phone_tv,address_tv,gender_tv,sports_tv,category_tv;
+    private TextView name_tv, email_tv,
+            phone_tv, address_tv, gender_tv, sports_tv, category_tv, history_tv;
     private FirebaseAuth firebaseAuth;
     private String userId;
     private DatabaseReference databaseReference;
@@ -44,10 +44,10 @@ public class ProfileFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static ProfileFragment getInstance(String userId){
+    public static ProfileFragment getInstance(String userId) {
 
         Bundle bundle = new Bundle();
-        bundle.putString("userId",userId);
+        bundle.putString("userId", userId);
         ProfileFragment profileFragment = new ProfileFragment();
         profileFragment.setArguments(bundle);
         return profileFragment;
@@ -64,7 +64,7 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         profile_iv = view.findViewById(R.id.profile_iv);
         name_tv = view.findViewById(R.id.name_tv);
@@ -74,19 +74,21 @@ public class ProfileFragment extends Fragment {
         gender_tv = view.findViewById(R.id.gender_tv);
         sports_tv = view.findViewById(R.id.sports_tv);
         category_tv = view.findViewById(R.id.category_tv);
+        history_tv = view.findViewById(R.id.history_tv);
+
 
 
        /* firebaseAuth = FirebaseAuth.getInstance();
         userId = firebaseAuth.getUid();*/
-       try {
-           userId = getArguments().getString("userId");
-       }catch (Exception e){}
+        try {
+            userId = getArguments().getString("userId");
+        } catch (Exception e) {
+        }
 
 
         databaseReference = FirebaseDatabase.getInstance().getReference("PlayerInfo");
 
         getDataFromFireBase();
-
 
 
         return view;
@@ -98,14 +100,12 @@ public class ProfileFragment extends Fragment {
         databaseReference.child(userId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
 
 
-
-                        UserPoJo userPoJo = dataSnapshot.getValue(UserPoJo.class);
-                        setUpLayout(userPoJo);
-                }
-                else {
+                    UserPoJo userPoJo = dataSnapshot.getValue(UserPoJo.class);
+                    setUpLayout(userPoJo);
+                } else {
 
                 }
 
@@ -114,7 +114,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                Toast.makeText(context, ""+databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "" + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -126,11 +126,13 @@ public class ProfileFragment extends Fragment {
         Picasso.get().load(uri).into(profile_iv);
         name_tv.setText(userPoJo.getName());
         email_tv.setText(userPoJo.getEmail());
-                phone_tv.setText(userPoJo.getPhone());
+        phone_tv.setText(userPoJo.getPhone());
         address_tv.setText(userPoJo.getAddress());
         gender_tv.setText(userPoJo.getGender());
         sports_tv.setText(userPoJo.getSports());
         category_tv.setText(userPoJo.getPlayerType());
+        history_tv.setText(userPoJo.getHistory());
+
 
     }
 

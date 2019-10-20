@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -49,6 +50,7 @@ public class FootballSignUpFragment extends Fragment {
     private Button sign_up_btn, upload_btn;
     private ImageView profile_iv;
     private RadioGroup football_rg;
+    private EditText history_et;
     private RadioButton goal_keeper_rb, striker_rb, mid_fielder_rb, defender_rb,referee_rb;
     public static final int GALLERY_PICK_CODE = 2;
 
@@ -104,6 +106,7 @@ public class FootballSignUpFragment extends Fragment {
         mid_fielder_rb = view.findViewById(R.id.mid_fielder_rb);
         defender_rb = view.findViewById(R.id.defender_rb);
         defender_rb = view.findViewById(R.id.defender_rb);
+        history_et = view.findViewById(R.id.history_et);
 
 
         firebaseAuth = FirebaseAuth.getInstance();

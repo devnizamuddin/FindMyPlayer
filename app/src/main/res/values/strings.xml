@@ -14,6 +14,12 @@
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
 
+    <string name="about_app"> Player can search other players and create events
+        to play alongside with another player is the main theme of this project.
+        Player can host events and hire others players.
+        If a player hires another player then that player will receive notification and can contact with him.
+        Player can see the news feed and will know about how many events are going on.</string>
+
 
     <array name="sports">
 
@@ -47,6 +53,73 @@
         with a link to reset your password.</string>
 
     <array name="location_array">
+        <item>Bagerhat</item>
+        <item>Barguna</item>
+        <item>Bandarban</item>
+        <item>Barisal</item>
+        <item>Bhola</item>
+        <item>Bogra</item>
+        <item>Brahmanbaria</item>
+        <item>Chandpur</item>
+        <item>Chapainawabganj</item>
+        <item>Chittagong</item>
+        <item>Chuadanga</item>
+        <item>Comilla</item>
+        <item>Cox s Bazar</item>
+        <item>Dhaka</item>
+        <item>Dinajpur</item>
+        <item>Faridpur</item>
+        <item>Feni</item>
+        <item>Gaibandha</item>
+        <item>Gazipur</item>
+        <item>Gopalganj</item>
+        <item>Habiganj</item>
+        <item>Jamalpur</item>
+        <item>Jessore</item>
+        <item>Jhalokati</item>
+        <item>Jhenaidah</item>
+        <item>Joypurhat</item>
+        <item>Khagrachhari</item>
+        <item>Khulna</item>
+        <item>Kishoreganj</item>
+        <item>Kurigram</item>
+        <item>Kushtia</item>
+        <item>Lakshmipur</item>
+        <item>Lalmonirhat</item>
+        <item>Madaripur</item>
+        <item>Magura</item>
+        <item>Manikganj</item>
+        <item>Meherpur</item>
+        <item>Moulvibazar</item>
+        <item>Munshiganj</item>
+        <item>Mymensingh</item>
+        <item>Naogaon</item>
+        <item>Narail</item>
+        <item>Natore</item>
+        <item>Narayanganj</item>
+        <item>Narsingdi</item>
+        <item>Netrokona</item>
+        <item>Noakhali</item>
+        <item>Nilphamari</item>
+        <item>Pabna</item>
+        <item>Patuakhali</item>
+        <item>Pirojpur</item>
+        <item>Panchagarh</item>
+        <item>Rangpur</item>
+        <item>Rangamati</item>
+        <item>Rajshahi</item>
+        <item>Rajbari</item>
+        <item>Satkhira</item>
+        <item>Shariatpur</item>
+        <item>Sherpur</item>
+        <item>Sunamganj</item>
+        <item>Sylhet</item>
+        <item>Sirajganj</item>
+        <item>Tangail</item>
+        <item>Thakurgaon</item>
+    </array>
+
+    <array name="dhaka_array">
         <item>Adabar</item>
         <item>Azampur</item>
         <item>Badda</item>

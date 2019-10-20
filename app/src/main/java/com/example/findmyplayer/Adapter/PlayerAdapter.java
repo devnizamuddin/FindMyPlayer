@@ -13,8 +13,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.findmyplayer.PoJo.HirePoJo;
 import com.example.findmyplayer.PoJo.UserPoJo;
 import com.example.findmyplayer.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -24,11 +30,19 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
     private Context context;
     private ArrayList<UserPoJo>userPoJos;
     private OnClickPlayerListener onClickPlayerListener;
+    private String currentUserId;
+    private String currentUserName;
+    private DatabaseReference databaseReference;
+    private FirebaseAuth firebaseAuth;
 
     public PlayerAdapter(Context context, ArrayList<UserPoJo> userPoJos, OnClickPlayerListener onClickPlayerListener) {
         this.context = context;
         this.userPoJos = userPoJos;
         this.onClickPlayerListener = onClickPlayerListener;
+        firebaseAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference("Hire");
+        currentUserId = firebaseAuth.getCurrentUser().getUid();
+        currentUserName = firebaseAuth.getCurrentUser().getDisplayName();
     }
 
     @NonNull
@@ -41,13 +55,41 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PlayerViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final PlayerViewHolder holder, int position) {
 
-        UserPoJo userPoJo = userPoJos.get(position);
+        final UserPoJo userPoJo = userPoJos.get(position);
         holder.name_tv.setText(userPoJo.getName());
         holder.phone_tv.setText(userPoJo.getPhone());
-        Uri uri = Uri.parse(userPoJo.getProfile_img_url());
+        final Uri uri = Uri.parse(userPoJo.getProfile_img_url());
         Picasso.get().load(uri).into(holder.profile_iv);
+
+        if (!currentUserId.equals(userPoJo.getId()))
+        {
+            holder.hire_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    String hireId = databaseReference.push().getKey();
+
+                    HirePoJo hirePoJo = new HirePoJo(hireId,currentUserId,userPoJo.getId(),currentUserName);
+                    databaseReference.child(hireId).setValue(hirePoJo).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+
+                            if (task.isSuccessful()){
+                                Toast.makeText(context, "Request Send", Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                Toast.makeText(context, ""+task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            });
+        }
+        else {
+            holder.hire_btn.setVisibility(Button.INVISIBLE);
+        }
 
     }
 

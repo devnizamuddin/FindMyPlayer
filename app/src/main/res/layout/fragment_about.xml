@@ -3,14 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Navigation.NewsFeedFragment">
+    tools:context=".Navigation.AboutFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/hire_rv"
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp" />
+        android:text="@string/about_app"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:padding="30dp"
+        />
 
 </FrameLayout>

@@ -35,7 +35,22 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:text="Nizam Uddin Shamrat"
+            android:text=""
+            android:textSize="20sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:text="History:" />
+
+        <TextView
+            android:id="@+id/history_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
             android:textSize="20sp" />
 
         <TextView
@@ -51,7 +66,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:text="somudromegh7@gmail.com"
             android:textSize="20sp" />
 
         <TextView
@@ -67,7 +81,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:text="01715577872"
             android:textSize="20sp" />
 
         <TextView
@@ -83,7 +96,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:text="Joar Shahara"
             android:textSize="20sp" />
 
         <TextView
@@ -99,7 +111,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:text="Male"
             android:textSize="20sp" />
 
         <TextView
@@ -115,7 +126,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:text="Cricket"
             android:textSize="20sp" />
 
         <TextView
@@ -131,7 +141,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:text="Batsman"
             android:textSize="20sp" />
     </LinearLayout>
 </ScrollView>
