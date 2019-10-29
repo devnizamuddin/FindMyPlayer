@@ -63,6 +63,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 @Override
                 public void onClick(View view) {
 
+                    // Nothing Change
                     databaseReference.child(eventPoJo.getId()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
