@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,7 +7,15 @@
     tools:context=".LoginFragment">
 
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+
     <TextView
+        android:id="@+id/app_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -24,6 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:layout_below="@+id/app_tv"
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -67,12 +76,13 @@
     </LinearLayout>
 
     <Button
+
         android:id="@+id/login_btn"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/input_layout"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="120dp"
         android:background="@drawable/blue_button_background"
         android:text="Login"
         android:textColor="@color/white" />
@@ -92,12 +102,14 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="40dp"
         android:background="@drawable/black_stoke"
         android:padding="10dp"
+        android:layout_below="@id/forget_password_tv"
         android:text="Create a new account"
         android:textColor="@color/colorPrimary"
-        android:textSize="20dp" />
+        android:textSize="20dp"
+        />
 
-
-</RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

@@ -13,18 +13,25 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
 
-import com.example.findmyplayer.Auth.LoginFragment;
 import com.example.findmyplayer.Navigation.AboutFragment;
 import com.example.findmyplayer.Navigation.AllPlayerFragment;
 import com.example.findmyplayer.Navigation.Events.EventFragment;
 import com.example.findmyplayer.Navigation.FindMyPlayer.FindMyPlayerFragment;
 import com.example.findmyplayer.Navigation.NewsFeedFragment;
-import com.example.findmyplayer.Navigation.ProfileFragment;
+import com.example.findmyplayer.Navigation.Profile.ProfileFragment;
+import com.example.findmyplayer.Navigation.Profile.ProfileHireFragment;
+import com.example.findmyplayer.PoJo.EventPoJo;
+import com.example.findmyplayer.PoJo.UserPoJo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -47,11 +54,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ImageView profileImageView;
     TextView username_tv, email_tv;
     DrawerLayout drawer;
-    String userId;
+
     Toolbar toolbar;
     FirebaseUser firebaseUser;
     FragmentTransaction fragmentTransaction;
     FragmentManager fragmentManager;
+    DatabaseReference databaseReference;
+    public static String userId;
+    public static String userType;
+    public static String userName;
+    UserPoJo userPoJo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,13 +93,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         profileImageView = headerLayout.findViewById(R.id.profileImageView);
         username_tv = headerLayout.findViewById(R.id.username_tv);
         email_tv = headerLayout.findViewById(R.id.email_tv);
+        databaseReference = FirebaseDatabase.getInstance().getReference("PlayerInfo");
 
-
-         firebaseUser = firebaseAuth.getCurrentUser();
+        firebaseUser = firebaseAuth.getCurrentUser();
 
         if (firebaseUser != null) {
             userId = firebaseUser.getUid();
-            username_tv.setText(firebaseUser.getDisplayName());
+            userName = firebaseUser.getDisplayName();
+            username_tv.setText(userName);
             email_tv.setText(firebaseUser.getEmail());
             Picasso.get().load(firebaseUser.getPhotoUrl()).into(profileImageView);
         } else {
@@ -94,20 +108,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-        changeFragment(new AllPlayerFragment());
+        databaseReference.child(userId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+
+                userPoJo = dataSnapshot.getValue(UserPoJo.class);
+                userType = userPoJo.getUserType();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        changeFragmentWithOutBackStack(new AllPlayerFragment());
         //****************************OnCreate :
     }
 
     @Override
     public void onBackPressed() {
+
+     //   Toast.makeText(this, ""+fragmentManager.getBackStackEntryCount(), Toast.LENGTH_SHORT).show();
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (fragmentManager.getBackStackEntryCount()>0){
+        }
+        else if (fragmentManager.getBackStackEntryCount() > 0) {
             super.onBackPressed();
 
         }
-        else{
-            buildClosingAppDialog();
+        else {
+            toolbar.setTitle("All Player");
+            changeFragment(new AllPlayerFragment());
         }
     }
 
@@ -165,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void passwordReset() {
 
-        if (firebaseUser !=null){
+        if (firebaseUser != null) {
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Do you really want to reset your password ?");
@@ -178,13 +213,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
 
-                            if (task.isSuccessful()){
+                            if (task.isSuccessful()) {
 
                                 Toast.makeText(MainActivity.this, "Email send", Toast.LENGTH_SHORT).show();
 
-                            }
-                            else {
-                                Toast.makeText(MainActivity.this, ""+task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(MainActivity.this, "" + task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -201,8 +235,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             builder.setCancelable(false);
             builder.show();
 
-        }
-        else {
+        } else {
             Toast.makeText(this, "Your are not logged in", Toast.LENGTH_SHORT).show();
         }
     }
@@ -210,12 +243,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
-        fragmentManager.popBackStack(0,FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//        fragmentManager.popBackStack(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         switch (menuItem.getItemId()) {
 
             case R.id.nav_profile:
+
                 toolbar.setTitle("Profile");
-                changeFragment(ProfileFragment.getInstance(userId));
+                if (userType.equals("Client")) {
+                    changeFragment(ProfileHireFragment.getInstance(userId));
+                } else {
+                    changeFragment(ProfileFragment.getInstance(userId));
+
+                }
                 break;
 
             case R.id.nav_all_player:
@@ -231,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_events:
 
                 toolbar.setTitle("Event");
-                changeFragment(new EventFragment());
+                changeFragment(EventFragment.getInstance(userPoJo.getAddress()));
                 break;
             case R.id.nav_news_feed:
 
@@ -250,10 +289,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 finish();
                 break;
 
-            default:
-                toolbar.setTitle("All Player");
-                changeFragment(new AllPlayerFragment());
-                break;
         }
 
         drawer.closeDrawer(GravityCompat.START);
@@ -263,7 +298,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     void changeFragment(Fragment fragment) {
 
-         fragmentManager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.container_main, fragment);
+        //fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+
+    }
+    void changeFragmentWithOutBackStack(Fragment fragment) {
+
+        fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container_main, fragment);
         fragmentTransaction.commit();

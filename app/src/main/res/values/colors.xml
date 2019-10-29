@@ -13,4 +13,5 @@
     <color name="darkLight">#1A2C3E50</color>
     <color name="custom_header_text">#2979FF</color>
     <color name="green">#05A248</color>
+    <color name="green_light">#00E261</color>
 </resources>

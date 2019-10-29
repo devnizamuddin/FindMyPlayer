@@ -1,10 +1,13 @@
 package com.example.findmyplayer.Auth;
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +19,8 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -50,9 +55,11 @@ public class FootballSignUpFragment extends Fragment {
     private Button sign_up_btn, upload_btn;
     private ImageView profile_iv;
     private RadioGroup football_rg;
-    private EditText history_et;
+    private EditText history_et,price_et;
     private RadioButton goal_keeper_rb, striker_rb, mid_fielder_rb, defender_rb,referee_rb;
-    public static final int GALLERY_PICK_CODE = 2;
+    private static final int GALLERY_IMAGE_CODE = 1;
+    private static final int STORAGE_PERMISSION_CODE = 2;
+
 
     private android.app.AlertDialog dialog;
 
@@ -107,6 +114,7 @@ public class FootballSignUpFragment extends Fragment {
         defender_rb = view.findViewById(R.id.defender_rb);
         defender_rb = view.findViewById(R.id.defender_rb);
         history_et = view.findViewById(R.id.history_et);
+        price_et = view.findViewById(R.id.price_et);
 
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -116,7 +124,15 @@ public class FootballSignUpFragment extends Fragment {
         upload_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getImageFromGallery(GALLERY_PICK_CODE);
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    getImageFromGallery(GALLERY_IMAGE_CODE);
+                } else {
+
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+                    return;
+                }
             }
         });
 
@@ -124,21 +140,48 @@ public class FootballSignUpFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                int radioButtonId = football_rg.getCheckedRadioButtonId();
-                RadioButton player_type_rv = getView().findViewById(radioButtonId);
-                String playerType = player_type_rv.getText().toString();
-                userPoJo.setPlayerType(playerType);
-                userPoJo.setGame_role_address(userPoJo.getSports()+"_"+userPoJo.getPlayerType()+"_"+userPoJo.getAddress());
-                userPoJo.setProfile_img_url(downloadUrl);
-                dialog.show();
-                signUpUser();
+                try {
+                    int radioButtonId = football_rg.getCheckedRadioButtonId();
+                    RadioButton player_type_rv = getView().findViewById(radioButtonId);
+                    String playerType = player_type_rv.getText().toString();
+                    String history = history_et.getText().toString();
+                    String price = price_et.getText().toString();
+                    userPoJo.setPrice(price);
+                    userPoJo.setUserType("Player");
+                    userPoJo.setPlayerType(playerType);
+                    userPoJo.setHistory(history);
+                    userPoJo.setProfile_img_url(downloadUrl);
+                    userPoJo.setGame_role_address(userPoJo.getSports() + "_" + userPoJo.getPlayerType() + "_" + userPoJo.getAddress());
+
+                    if (!TextUtils.isEmpty(downloadUrl) && !TextUtils.isEmpty(history)
+                            && !TextUtils.isEmpty(playerType)  && !TextUtils.isEmpty(price)) {
+
+                        dialog.show();
+                        signUpUser();
+                    } else {
+                        Toast.makeText(context, "All field are require", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                } catch (Exception e) {
+
+                    Toast.makeText(context, ""+e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         profile_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getImageFromGallery(GALLERY_PICK_CODE);
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    getImageFromGallery(GALLERY_IMAGE_CODE);
+                } else {
+
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+                    return;
+                }
             }
         });
 
@@ -226,7 +269,7 @@ public class FootballSignUpFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == GALLERY_PICK_CODE && resultCode == RESULT_OK){
+        if (requestCode == GALLERY_IMAGE_CODE && resultCode == RESULT_OK){
 
             Uri uri = data.getData();
 

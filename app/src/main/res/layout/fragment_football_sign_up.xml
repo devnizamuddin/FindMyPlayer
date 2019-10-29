@@ -87,7 +87,25 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
-            android:text="Payer History : "
+            android:text="Price : "
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp" />
+        <EditText
+            android:id="@+id/price_et"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="20dp"
+            android:background="@drawable/black_stoke"
+            android:gravity="center"
+            android:inputType="number"
+            android:hint="500"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Player History : "
             android:textColor="@color/colorPrimary"
             android:textSize="20sp" />
 

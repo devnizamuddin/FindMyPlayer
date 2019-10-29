@@ -16,11 +16,34 @@ public class UserPoJo implements Serializable {
     String profile_img_url;
     String game_role_address;
     String history;
+    String userType;
+    String price;
 
     public UserPoJo() {
     }
 
-    public UserPoJo(String name, String email, String password, String phone, String address, String gender, String sports) {
+    public UserPoJo(String id, String name, String email, String password, String phone,
+                    String address, String gender, String sports, String playerType,
+                    String profile_img_url, String game_role_address,
+                    String history, String userType, String price) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.address = address;
+        this.gender = gender;
+        this.sports = sports;
+        this.playerType = playerType;
+        this.profile_img_url = profile_img_url;
+        this.game_role_address = game_role_address;
+        this.history = history;
+        this.userType = userType;
+        this.price = price;
+    }
+
+    public UserPoJo(String name, String email, String password, String phone,
+                    String address, String gender, String sports) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -75,6 +98,22 @@ public class UserPoJo implements Serializable {
         this.profile_img_url = profile_img_url;
         this.game_role_address = game_role_address;
         this.history = history;
+    }
+
+    public UserPoJo(String id, String name, String email, String password, String phone, String address, String gender, String sports, String playerType, String profile_img_url, String game_role_address, String history, String userType) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.address = address;
+        this.gender = gender;
+        this.sports = sports;
+        this.playerType = playerType;
+        this.profile_img_url = profile_img_url;
+        this.game_role_address = game_role_address;
+        this.history = history;
+        this.userType = userType;
     }
 
 
@@ -173,5 +212,21 @@ public class UserPoJo implements Serializable {
 
     public void setHistory(String history) {
         this.history = history;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 }

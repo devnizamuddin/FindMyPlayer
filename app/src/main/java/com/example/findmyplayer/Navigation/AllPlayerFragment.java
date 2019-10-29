@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.findmyplayer.Adapter.PlayerAdapter;
+import com.example.findmyplayer.Navigation.Profile.ProfileFragment;
 import com.example.findmyplayer.PoJo.UserPoJo;
 import com.example.findmyplayer.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -97,7 +98,7 @@ public class AllPlayerFragment extends Fragment implements PlayerAdapter.OnClick
     private void getDataFromFireBase() {
 
         dialog.show();
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.orderByChild("userType").equalTo("Player").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){

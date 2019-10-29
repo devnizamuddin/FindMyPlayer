@@ -19,9 +19,12 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.findmyplayer.Adapter.HireAdapter;
-import com.example.findmyplayer.Adapter.PlayerAdapter;
+import com.example.findmyplayer.Adapter.InterestedAdapter;
+import com.example.findmyplayer.MainActivity;
+import com.example.findmyplayer.Navigation.Profile.ProfileFragment;
+import com.example.findmyplayer.Navigation.Profile.ProfileHireFragment;
 import com.example.findmyplayer.PoJo.HirePoJo;
-import com.example.findmyplayer.PoJo.UserPoJo;
+import com.example.findmyplayer.PoJo.InterestedPoJo;
 import com.example.findmyplayer.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -38,7 +41,8 @@ import dmax.dialog.SpotsDialog;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NewsFeedFragment extends Fragment implements HireAdapter.HireItemClickListener {
+public class NewsFeedFragment extends Fragment
+        implements HireAdapter.HireItemClickListener,InterestedAdapter.InterestedItemClickListener {
 
     RecyclerView hire_rv;
     private Context context;
@@ -46,8 +50,11 @@ public class NewsFeedFragment extends Fragment implements HireAdapter.HireItemCl
     private FirebaseAuth firebaseAuth;
     private String userId;
     private ArrayList<HirePoJo> hirePoJos;
+    private ArrayList<InterestedPoJo>interestedPoJos;
     private HireAdapter hireAdapter;
+    private InterestedAdapter interestedAdapter;
     android.app.AlertDialog dialog;
+    String userType;
 
     public NewsFeedFragment() {
         // Required empty public constructor
@@ -66,16 +73,15 @@ public class NewsFeedFragment extends Fragment implements HireAdapter.HireItemCl
         View view = inflater.inflate(R.layout.fragment_news_feed, container, false);
 
         hire_rv = view.findViewById(R.id.hire_rv);
-        //Backend Initialization
-        databaseReference = FirebaseDatabase.getInstance().getReference("Hire");
+
+        userType = MainActivity.userType;
+
         firebaseAuth = FirebaseAuth.getInstance();
         userId = firebaseAuth.getCurrentUser().getUid();
 
         //Loading Dialog
         dialog = new SpotsDialog.Builder().setContext(context)
                 .setCancelable(false).setTheme(R.style.CustomDialog).build();
-
-        hirePoJos = new ArrayList<>();
 
         //RecyclerView.............................
         @SuppressLint("WrongConstant") RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -88,15 +94,70 @@ public class NewsFeedFragment extends Fragment implements HireAdapter.HireItemCl
             }
         };
         hire_rv.addItemDecoration(itemDecoration);
-        hireAdapter = new HireAdapter(context, this, hirePoJos);
-        hire_rv.setAdapter(hireAdapter);
+
+        if (userType.equals("Player")){
+            databaseReference = FirebaseDatabase.getInstance().getReference("Hire");
+            hirePoJos = new ArrayList<>();
+            hireAdapter = new HireAdapter(context, this, hirePoJos);
+            hire_rv.setAdapter(hireAdapter);
+            getHireDataFromFireBase();
+        }
+
+        else {
+            databaseReference = FirebaseDatabase.getInstance().getReference("Interested");
+            interestedPoJos = new ArrayList<>();
+            interestedAdapter = new InterestedAdapter(context,interestedPoJos,this);
+            hire_rv.setAdapter(interestedAdapter);
+            getInterestedDataFromFireBase();
+
+        }
+
+
+
+
+
+
         //..............................RecyclerView
 
-        getDataFromFireBase();
+
         return view;
     }
 
-    private void getDataFromFireBase() {
+    private void getInterestedDataFromFireBase() {
+
+        dialog.show();
+        databaseReference.orderByChild("eventCreatorId").equalTo(MainActivity.userId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+
+                    interestedPoJos.clear();
+                    for (DataSnapshot data : dataSnapshot.getChildren()){
+
+
+                        InterestedPoJo interestedPoJo = data.getValue(InterestedPoJo.class);
+                        interestedPoJos.add(interestedPoJo);
+
+                    }
+                    interestedAdapter.updateInterestList(interestedPoJos);
+                    dialog.dismiss();
+                }
+                else {
+                    interestedPoJos.clear();
+                    interestedAdapter.updateInterestList(interestedPoJos);
+                    dialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void getHireDataFromFireBase() {
 
         dialog.show();
         databaseReference.orderByChild("playerId").equalTo(userId).addValueEventListener(new ValueEventListener() {
@@ -136,7 +197,7 @@ public class NewsFeedFragment extends Fragment implements HireAdapter.HireItemCl
     @Override
     public void onClickHireItem(HirePoJo hirePoJo) {
 
-        changeFragment(ProfileFragment.getInstance(hirePoJo.getRecruiterId()));
+        changeFragment(ProfileHireFragment.getInstance(hirePoJo.getRecruiterId()));
 
     }
     void changeFragment(Fragment fragment) {
@@ -145,6 +206,13 @@ public class NewsFeedFragment extends Fragment implements HireAdapter.HireItemCl
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container_main, fragment);
         fragmentTransaction.commit();
+
+    }
+
+    @Override
+    public void onClickInterestedItem(InterestedPoJo interestedPoJo) {
+
+        changeFragment(ProfileFragment.getInstance(interestedPoJo.getInterestedUserId()));
 
     }
 }

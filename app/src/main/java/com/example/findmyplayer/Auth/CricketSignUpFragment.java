@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,15 +52,15 @@ public class CricketSignUpFragment extends Fragment {
     private Button sign_up_btn, upload_btn;
     private ImageView profile_iv;
     private RadioGroup cricket_rg;
-    private EditText history_et;
+    private EditText history_et, price_et;
     private RadioButton wicket_rb, bowler_rb, batsman_rb, umpire_rb;
     private static final int GALLERY_IMAGE_CODE = 1;
+    private static final int STORAGE_PERMISSION_CODE = 2;
     android.app.AlertDialog dialog;
 
     FirebaseAuth firebaseAuth;
     DatabaseReference databaseReference;
     FirebaseStorage storageReference;
-    private static final int STORAGE_PERMISSION_CODE = 2;
 
     String downloadUrl;
 
@@ -108,6 +109,8 @@ public class CricketSignUpFragment extends Fragment {
         batsman_rb = view.findViewById(R.id.batsman_rb);
         umpire_rb = view.findViewById(R.id.umpire_rb);
         history_et = view.findViewById(R.id.history_et);
+        price_et = view.findViewById(R.id.price_et);
+
 
         firebaseAuth = FirebaseAuth.getInstance();
         storageReference = FirebaseStorage.getInstance();
@@ -124,7 +127,8 @@ public class CricketSignUpFragment extends Fragment {
                     getImageFromGallery(GALLERY_IMAGE_CODE);
                 } else {
 
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, GALLERY_IMAGE_CODE);
+                    ActivityCompat.requestPermissions(
+                            getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
                     return;
                 }
             }
@@ -138,7 +142,7 @@ public class CricketSignUpFragment extends Fragment {
                     getImageFromGallery(GALLERY_IMAGE_CODE);
                 } else {
 
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, GALLERY_IMAGE_CODE);
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
                     return;
                 }
 
@@ -149,16 +153,33 @@ public class CricketSignUpFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                int radioButtonId = cricket_rg.getCheckedRadioButtonId();
-                RadioButton player_type_rv = getView().findViewById(radioButtonId);
-                String playerType = player_type_rv.getText().toString();
-                String history = history_et.getText().toString();
-                userPoJo.setPlayerType(playerType);
-                userPoJo.setProfile_img_url(downloadUrl);
-                userPoJo.setHistory(history);
-                userPoJo.setGame_role_address(userPoJo.getSports() + "_" + userPoJo.getPlayerType() + "_" + userPoJo.getAddress());
-                dialog.show();
-                signUpUser();
+
+                try {
+                    int radioButtonId = cricket_rg.getCheckedRadioButtonId();
+                    RadioButton player_type_rv = getView().findViewById(radioButtonId);
+                    String playerType = player_type_rv.getText().toString();
+                    String history = history_et.getText().toString();
+                    String price = price_et.getText().toString();
+                    userPoJo.setPrice(price);
+                    userPoJo.setUserType("Player");
+                    userPoJo.setPlayerType(playerType);
+                    userPoJo.setHistory(history);
+                    userPoJo.setProfile_img_url(downloadUrl);
+                    userPoJo.setGame_role_address(userPoJo.getSports() + "_" + userPoJo.getPlayerType() + "_" + userPoJo.getAddress());
+
+                    if (!TextUtils.isEmpty(downloadUrl) && !TextUtils.isEmpty(history)
+                            && !TextUtils.isEmpty(playerType)  && !TextUtils.isEmpty(price)) {
+                        signUpUser();
+                    } else {
+                        Toast.makeText(context, "All field are require", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                } catch (Exception e) {
+
+                    Toast.makeText(context, "" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                }
+
 
             }
         });
@@ -167,6 +188,7 @@ public class CricketSignUpFragment extends Fragment {
     }
 
     private void signUpUser() {
+        dialog.show();
 
         firebaseAuth.createUserWithEmailAndPassword(userPoJo.getEmail(), userPoJo.getPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -304,6 +326,10 @@ public class CricketSignUpFragment extends Fragment {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         clearBackstack();
+        for (int i = 0; i < fragmentManager.getBackStackEntryCount(); i++) {
+
+            fragmentManager.popBackStack();
+        }
         fragmentTransaction.replace(R.id.container_auth, fragment);
         fragmentTransaction.commit();
 
@@ -311,11 +337,6 @@ public class CricketSignUpFragment extends Fragment {
 
     public void clearBackstack() {
 
-        FragmentManager.BackStackEntry entry = getActivity().getSupportFragmentManager().getBackStackEntryAt(
-                0);
-        getActivity().getSupportFragmentManager().popBackStack(entry.getId(),
-                FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        getActivity().getSupportFragmentManager().executePendingTransactions();
 
     }
 }

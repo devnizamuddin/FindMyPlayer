@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.findmyplayer.R;
@@ -31,6 +32,8 @@ public class FindMyPlayerFragment extends Fragment {
     private ArrayAdapter<CharSequence> addressArrayAdapter,
             sportsArrayAdapter, cricketPlayerArrayAdapter, footballPlayerArrayAdapter;
     String sports, playerType, address;
+
+    private TextView player_type_tv;
 
     public FindMyPlayerFragment() {
         // Required empty public constructor
@@ -52,7 +55,7 @@ public class FindMyPlayerFragment extends Fragment {
         sports_sp = view.findViewById(R.id.sports_sp);
         player_type_sp = view.findViewById(R.id.player_type_sp);
         find_player_btn = view.findViewById(R.id.find_player_btn);
-
+        player_type_tv = view.findViewById(R.id.player_type_tv);
         //Initialize Array Adapter*****************
 
         addressArrayAdapter = ArrayAdapter.
@@ -96,10 +99,15 @@ public class FindMyPlayerFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                 sports = adapterView.getSelectedItem().toString();
+
                 if (sports.equals("Cricket")) {
                     player_type_sp.setAdapter(cricketPlayerArrayAdapter);
-                } else {
+                } else if (sports.equals("Football")){
                     player_type_sp.setAdapter(footballPlayerArrayAdapter);
+                }
+                else {
+                    player_type_sp.setVisibility(Spinner.INVISIBLE);
+                    player_type_tv.setVisibility(TextView.INVISIBLE);
                 }
 
             }
@@ -133,8 +141,14 @@ public class FindMyPlayerFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                changeFragment(PlayerListFragment.getInstance(sports+"_"+playerType+"_"+address));
-                Toast.makeText(context, ""+sports+"_"+playerType+"_"+address, Toast.LENGTH_LONG).show();
+                if (sports.equals("Cricket") || sports.equals("Football")){
+                    changeFragment(PlayerListFragment.getInstance(sports+"_"+playerType+"_"+address));
+                }
+                else {
+                    changeFragment(PlayerListFragment.getInstance(sports+"_"+address));
+                }
+
+
             }
         });
 

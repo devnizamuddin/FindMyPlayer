@@ -7,12 +7,22 @@ public class HirePoJo implements Serializable {
 
     String id;
     String recruiterId;
+    String recruiterType;
     String playerId;
     String recruiterName;
+
 
     public HirePoJo(String id, String recruiterId, String playerId, String recruiterName) {
         this.id = id;
         this.recruiterId = recruiterId;
+        this.playerId = playerId;
+        this.recruiterName = recruiterName;
+    }
+
+    public HirePoJo(String id, String recruiterId, String recruiterType, String playerId, String recruiterName) {
+        this.id = id;
+        this.recruiterId = recruiterId;
+        this.recruiterType = recruiterType;
         this.playerId = playerId;
         this.recruiterName = recruiterName;
     }
@@ -51,4 +61,6 @@ public class HirePoJo implements Serializable {
     public void setRecruiterName(String recruiterName) {
         this.recruiterName = recruiterName;
     }
+
+
 }

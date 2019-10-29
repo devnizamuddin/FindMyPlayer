@@ -16,11 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.findmyplayer.Adapter.PlayerAdapter;
-import com.example.findmyplayer.Navigation.ProfileFragment;
+import com.example.findmyplayer.Navigation.Profile.ProfileFragment;
 import com.example.findmyplayer.PoJo.UserPoJo;
 import com.example.findmyplayer.R;
 import com.google.firebase.auth.FirebaseAuth;

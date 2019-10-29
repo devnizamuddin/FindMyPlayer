@@ -78,7 +78,6 @@ public class SignUpFragment extends Fragment {
 
                 String location = adapterView.getSelectedItem().toString();
                 address_et.setText(location);
-                Toast.makeText(context, ""+location, Toast.LENGTH_SHORT).show();
 
             }
 
@@ -109,12 +108,18 @@ public class SignUpFragment extends Fragment {
         String password = password_et.getText().toString();
         String phone = phone_et.getText().toString();
         String address = address_et.getText().toString();
-        int genderSelectedId = gender_rg.getCheckedRadioButtonId();
-        RadioButton gender_rv = getView().findViewById(genderSelectedId);
-        String gender = gender_rv.getText().toString();
-        int sports_selectedId = sports_rg.getCheckedRadioButtonId();
-        RadioButton sports_rv = getView().findViewById(sports_selectedId);
-        String sports = sports_rv.getText().toString();
+        String gender = null,sports = null;
+        try {
+            int genderSelectedId = gender_rg.getCheckedRadioButtonId();
+            RadioButton gender_rv = getView().findViewById(genderSelectedId);
+            gender = gender_rv.getText().toString();
+            int sports_selectedId = sports_rg.getCheckedRadioButtonId();
+            RadioButton sports_rv = getView().findViewById(sports_selectedId);
+             sports = sports_rv.getText().toString();
+        } catch (Exception e){
+
+        }
+
 
         if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(password) &&
                 !TextUtils.isEmpty(phone) && !TextUtils.isEmpty(address)&& !TextUtils.isEmpty(gender)
@@ -122,16 +127,27 @@ public class SignUpFragment extends Fragment {
 
             //No Empty Field Here
             UserPoJo userPoJo = new UserPoJo(name,email,password,phone,address,gender,sports);
-            if (sports.equals("Cricket")){
+            switch (sports){
+                case "Cricket":
 
-                //Cricket
-                changeFragment(CricketSignUpFragment.getInstance(userPoJo));
-            }
+                    changeFragment(CricketSignUpFragment.getInstance(userPoJo));
 
-            else {
+                    break;
+                case "Football":
 
-                //FootBall
-                changeFragment(FootballSignUpFragment.getInstance(userPoJo));
+                    changeFragment(FootballSignUpFragment.getInstance(userPoJo));
+
+                    break;
+                case "Kabaddi":
+
+                    changeFragment(OtherPlayerSignUpFragment.getInstance(userPoJo));
+
+                    break;
+                case "Gollachhut":
+
+                    changeFragment(OtherPlayerSignUpFragment.getInstance(userPoJo));
+
+                    break;
             }
 
 
@@ -154,5 +170,7 @@ public class SignUpFragment extends Fragment {
         fragmentTransaction.commit();
 
     }
+
+
 
 }

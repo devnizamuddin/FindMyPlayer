@@ -24,7 +24,7 @@ public class HireAdapter extends RecyclerView.Adapter<HireAdapter.HireViewHolder
 
     private Context context;
     private HireItemClickListener hireItemClickListener;
-    private ArrayList<HirePoJo>hirePoJos;
+    private ArrayList<HirePoJo> hirePoJos;
     private DatabaseReference databaseReference;
 
     public HireAdapter(Context context, HireItemClickListener hireItemClickListener, ArrayList<HirePoJo> hirePoJos) {
@@ -38,7 +38,7 @@ public class HireAdapter extends RecyclerView.Adapter<HireAdapter.HireViewHolder
     @Override
     public HireViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(context).inflate(R.layout.news_feed_single_layout,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.news_feed_single_layout, parent, false);
         return new HireViewHolder(view);
     }
 
@@ -46,7 +46,7 @@ public class HireAdapter extends RecyclerView.Adapter<HireAdapter.HireViewHolder
     public void onBindViewHolder(@NonNull HireViewHolder holder, int position) {
 
         HirePoJo hirePoJo = hirePoJos.get(position);
-        holder.hire_tv.setText(hirePoJo.getRecruiterName()+" wants to hire you");
+        holder.hire_tv.setText(hirePoJo.getRecruiterName() + " wants to hire you");
 
     }
 
@@ -74,11 +74,10 @@ public class HireAdapter extends RecyclerView.Adapter<HireAdapter.HireViewHolder
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
 
-                            if (task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
-                            }
-                            else {
-                                Toast.makeText(context, ""+task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "" + task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -95,12 +94,12 @@ public class HireAdapter extends RecyclerView.Adapter<HireAdapter.HireViewHolder
         }
     }
 
-    public interface HireItemClickListener{
+    public interface HireItemClickListener {
 
         void onClickHireItem(HirePoJo hirePoJo);
     }
 
-    public void updateHireList(ArrayList<HirePoJo>hirePoJos){
+    public void updateHireList(ArrayList<HirePoJo> hirePoJos) {
 
         this.hirePoJos = hirePoJos;
         notifyDataSetChanged();

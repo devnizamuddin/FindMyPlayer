@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,7 +81,7 @@ public class LoginFragment extends Fragment {
         create_account_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeFragment(new SignUpFragment());
+                changeFragment(new UserTypeSelectFragment());
             }
         });
         forget_password_tv.setOnClickListener(new View.OnClickListener() {
@@ -95,35 +96,55 @@ public class LoginFragment extends Fragment {
     private void loginUser() {
 
         dialog.show();
+
         String email = email_et.getText().toString();
         String password = password_et.getText().toString();
 
-        firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
+        if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)){
 
-                    if (firebaseAuth.getCurrentUser().isEmailVerified()){
+            //Email Password is not null
+            firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        //Login Successful Successful
+
+                        if (firebaseAuth.getCurrentUser().isEmailVerified()){
+
+                            //Email Verified
+                            dialog.dismiss();
+                            Intent intent = new Intent(getActivity(), MainActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            getActivity().finish();
+
+
+
+                        }
+                        else {
+                            //Email not Verified
+                            dialog.dismiss();
+                            Toast.makeText(context, "Please verify your email", Toast.LENGTH_SHORT).show();
+                        }
+
+                    } else {
+
+                        // Login Error
                         dialog.dismiss();
-                        Intent intent = new Intent(getActivity(), MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        getActivity().finish();
-
-
-
+                        Toast.makeText(getActivity(), "" + task.getException().getLocalizedMessage(), Toast.LENGTH_LONG).show();
                     }
-                    else {
-                        dialog.dismiss();
-                        Toast.makeText(context, "Please verify your email", Toast.LENGTH_SHORT).show();
-                    }
-
-                } else {
-                    dialog.dismiss();
-                    Toast.makeText(getActivity(), "" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
+            });
+
+        }
+        else {
+
+            //Email Password is null
+            dialog.dismiss();
+            Toast.makeText(context, "All filed required", Toast.LENGTH_SHORT).show();
+        }
+
+
 
 
     }

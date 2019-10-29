@@ -25,6 +25,8 @@
 
         <item>Cricket</item>
         <item>Football</item>
+        <item>Kabaddi</item>
+        <item>Gollachhut</item>
 
     </array>
     <array name="cricket_player_type">
@@ -44,6 +46,13 @@
         <item>Defender</item>
         <item>Goal-Keeper</item>
         <item>Referee</item>
+
+    </array>
+    <array name="gender_type">
+
+
+        <item>Male</item>
+        <item>Female</item>
 
     </array>
 
@@ -165,4 +174,6 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="event_description">Description: Match between mirpur1 and mirpur 2 will be happened</string>
+    <string name="history_hint">In only his second ODI against Sri Lanka in 1996, he blasted his way to a 37-ball century. For more than 17 years, it remained the fastest century in the ODI format before Corey Anderson broke the record in January 2014.</string>
 </resources>

@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.findmyplayer.MainActivity;
 import com.example.findmyplayer.PoJo.HirePoJo;
 import com.example.findmyplayer.PoJo.UserPoJo;
 import com.example.findmyplayer.R;
@@ -59,11 +60,16 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
 
         final UserPoJo userPoJo = userPoJos.get(position);
         holder.name_tv.setText(userPoJo.getName());
-        holder.phone_tv.setText(userPoJo.getPhone());
-        final Uri uri = Uri.parse(userPoJo.getProfile_img_url());
-        Picasso.get().load(uri).into(holder.profile_iv);
+        holder.price_tv.setText(userPoJo.getPrice()+ " Taka");
+        try {
+            final Uri uri = Uri.parse(userPoJo.getProfile_img_url());
+            Picasso.get().load(uri).into(holder.profile_iv);
+        }
+        catch (Exception e){}
 
-        if (!currentUserId.equals(userPoJo.getId()))
+
+
+        if (MainActivity.userType.equals("Client"))
         {
             holder.hire_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -71,7 +77,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
 
                     String hireId = databaseReference.push().getKey();
 
-                    HirePoJo hirePoJo = new HirePoJo(hireId,currentUserId,userPoJo.getId(),currentUserName);
+                    HirePoJo hirePoJo = new HirePoJo(hireId,currentUserId, MainActivity.userType,userPoJo.getId(),currentUserName);
                     databaseReference.child(hireId).setValue(hirePoJo).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -101,7 +107,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
 
     public class PlayerViewHolder extends RecyclerView.ViewHolder {
 
-        TextView name_tv,phone_tv;
+        TextView name_tv, price_tv;
         Button hire_btn;
         ImageView profile_iv;
 
@@ -109,7 +115,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
             super(itemView);
 
             name_tv = itemView.findViewById(R.id.name_tv);
-            phone_tv = itemView.findViewById(R.id.phone_tv);
+            price_tv = itemView.findViewById(R.id.price_tv);
             hire_btn = itemView.findViewById(R.id.hire_btn);
             profile_iv = itemView.findViewById(R.id.profile_iv);
 
